@@ -6,6 +6,8 @@ import Welcome from './screens/Welcome';
 import { NavigationContainer } from "@react-navigation/native";
 import Onboarding1 from './screens/Onboarding1';
 import Login from './screens/Login';
+import ResetPassword from './screens/ResetPassword';
+import Register from './screens/Register';
 
 const config = {
   animation: "spring",
@@ -59,6 +61,14 @@ export default function App() {
       <Stack.Screen name="Login" component={Login} options={{
         headerShown: false
       }} />
+
+      <Stack.Screen name="ResetPassword" component={ResetPassword} options={{
+        headerShown: false
+      }} />
+
+      <Stack.Screen name="Register" component={Register} options={{
+        headerShown: false
+      }} />
     
       {/* <Stack.Screen name="Welcome" component={Welcome} options={{
         headerShown: false
@@ -67,7 +77,7 @@ export default function App() {
     </Stack.Navigator>
 
      </NavigationContainer>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </>
   );
 }

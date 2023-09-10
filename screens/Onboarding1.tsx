@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
 import React from 'react';
 import LottieView from 'lottie-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,16 +13,19 @@ const Onboarding1 = ({navigation} : any) => {
             position: "absolute",
             top: Dimensions.get("screen").height * 0.1,
         }}> 
-            <Text style={styles.app_name}>Communicare</Text>
+            <Text style={styles.app_name}>LearnHub</Text>
         </View>
 
-        <View style={styles.hello_anm}>
-        <LottieView
-          source={require('../assets/animations/hello.json')}
-          autoPlay={true}
-        />    
-        </View>
-        
+         <LottieView
+         source={require('../assets/animations/animations/education.json')}
+         style={{
+            width: Dimensions.get("window").width * 0.8,
+            height: Dimensions.get("window").height * 0.3,
+         }}
+         autoPlay={true}
+         loop={true}
+         />
+
         {/* Login Btn */}
         <TouchableOpacity style={styles.LoginBtn} onPress={() => navigation.navigate("Login")}>
         <LinearGradient
@@ -44,7 +47,7 @@ const Onboarding1 = ({navigation} : any) => {
         </TouchableOpacity>
 
         {/* Register Btn */}
-        <TouchableOpacity style={styles.RegisterBtn}>
+        <TouchableOpacity style={styles.RegisterBtn} onPress={() => navigation.navigate("Register")}>
         <LinearGradient
         // Background Linear Gradient
         colors={['#348CFD', '#4EAEFF']}
@@ -74,17 +77,18 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#1A1A2C'
+        backgroundColor: '#fff'
     },
     hello_anm: {
         width: Dimensions.get("screen").width * 0.9,
-        height: Dimensions.get("screen").height * 0.9
+        height: Dimensions.get("screen").height * 0.9,
     },
     app_name: {
-        fontSize: 30,
+        fontSize: 35,
         fontWeight: "bold",
         fontFamily: 'sans-serif-medium',
-        color: "#FFFF"
+        color: "#000",
+        fontStyle: "italic",
     },
     LoginBtn: {
         width: Dimensions.get("screen").width * 0.62,
@@ -92,7 +96,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: Dimensions.get("screen").height * 0.08,
         borderRadius: 20,
-        elevation: 5
     },
     RegisterBtn: {
         width: Dimensions.get("screen").width * 0.62,
@@ -100,6 +103,5 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: Dimensions.get("screen").height * 0.037,
         borderRadius: 20,
-        elevation: 5
     }
 });
