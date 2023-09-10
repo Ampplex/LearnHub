@@ -9,6 +9,8 @@ import Login from './screens/Login';
 import ResetPassword from './screens/ResetPassword';
 import Register from './screens/Register';
 
+// Push to GitHub 'git push -u origin main'
+
 const config = {
   animation: "spring",
   config: {
