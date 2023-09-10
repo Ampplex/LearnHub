@@ -19,7 +19,7 @@ const Onboarding1 = ({navigation} : any) => {
          <LottieView
          source={require('../assets/animations/animations/education.json')}
          style={{
-            width: Dimensions.get("window").width * 0.8,
+            width: Dimensions.get("window").width,
             height: Dimensions.get("window").height * 0.3,
          }}
          autoPlay={true}

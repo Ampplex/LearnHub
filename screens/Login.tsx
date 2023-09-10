@@ -2,49 +2,84 @@ import { StyleSheet, Text, View, Dimensions, TextInput, ScrollView ,TouchableOpa
 import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-
+import FlashMessage from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
 
 interface Login_construct {
-  RequestLogin() : Promise<void>
+  RequestLogin() : Promise<Number>
   Reset() : string | void
 }
 
-class Login_Btn_Handler implements Login_construct
-{
-  private email : string;
-  private password : string;
-
-  constructor(email: string, password: string){
-    this.email = email;
-    this.password = password;
-  }
-
-  public RequestLogin = async () : Promise<void> => {
-      const url = `https://ampplex-backend.onrender.com/Login/${this.email}/${this.password}`;
-      console.log("Request sent");
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if(data.status_code == "200") {
-        console.log("Logined successfully")
-      } else {
-        console.log("Error")
-      }
-  }
-  
-  public Reset = () : string | void => {
-    return "Reset";
-  }
-}
-
 const Login = ({navigation}: any) => {
+  
+  class Login_Btn_Handler implements Login_construct
+  {
+    private email : string;
+    private password : string;
+    public username : string;
+  
+    constructor(email: string, password: string){
+      this.email = email;
+      this.password = password;
+      this.username = "";
+    }
+  
+    public RequestLogin = async () : Promise<Number> => {
+        const url = `https://ampplex-backend.onrender.com/Login/${this.email}/${this.password}`;
+        // console.log("Request sent");
+        const response = await fetch(url);
+        const data = await response.json();
+        let userName = "";
+  
+        if(data.status_code == "200") {
+          
+          this.username = data.userName; // Retreiving userName returned by the backend server
+          userName = this.username;
+          
+          showMessage({
+            message: "Logined successfully!",
+            type: "success",
+          });
+
+          setTimeout(() => {
+            navigation.navigate("EnterCode", {userName})
+          }, 680);
+          return 0;
+  
+        } 
+        else if (this.password.length <= 8) {
+          showMessage({
+            message: "Password length must be more than 8 characters",
+            type: "danger",
+          });
+  
+        }
+        else {
+          showMessage({
+            message: "Some error occurred!",
+            type: "danger",
+          });
+  
+        }
+        return 1;
+    }
+    
+    public Reset = () : string | void => {
+      return "Reset";
+    }
+  }
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   return (
     <>
+    <View style={{ 
+      flex: 1,
+      backgroundColor: "#fff"
+    }}>
     <ScrollView contentContainerStyle={styles.container}>
+
       <LinearGradient
         // Background Linear Gradient
         colors={['#F72C98', '#A94ACA']}
@@ -152,12 +187,11 @@ const Login = ({navigation}: any) => {
 
               {/* Reset button */}
       <View style={{ 
-        bottom : -Dimensions.get("screen").height * 0.035,
-        left: Dimensions.get("screen").width * 0.14
+        bottom : -Dimensions.get("screen").height * 0.036,
       }}>
         <TouchableOpacity style={{
           backgroundColor: "#fff",
-          width: 68,
+          width: 200,
           height: 30,
         }}
         onPress={() => navigation.navigate("ResetPassword")}
@@ -167,20 +201,14 @@ const Login = ({navigation}: any) => {
                   fontFamily: "sans-serif-medium",
                   alignSelf: "center",
                   paddingTop: 5,
-              }}>Reset</Text>
+              }}>Forgot password? Reset</Text>
         </TouchableOpacity> 
       </View>
-      {/* Forgot Password */}
-      
-      <Text style={{
-        color: "black",
-        fontFamily: "sans-serif-medium",
-        position: "absolute",
-        bottom : Dimensions.get("screen").height * 0.25,
-        left: Dimensions.get("screen").width * 0.27,
-      }}>Forgot password? </Text>
-      
+
+      <FlashMessage position={"bottom"}/>
+
   </ScrollView>
+  </View>
     </>
   )
 }
@@ -192,12 +220,12 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#fff',
-      height: Dimensions.get("screen").height * 1.03,
-      width: Dimensions.get("screen").width,
+      height: Dimensions.get("window").height,
+      width: Dimensions.get("window").width,
     },
     background: {
-      width: Dimensions.get("screen").width,
-      height: Dimensions.get("screen").height * 0.3,
+      width: Dimensions.get("window").width,
+      height: Dimensions.get("window").height * 0.3,
       position: "absolute",
       top: 0,
       borderBottomLeftRadius: 130,

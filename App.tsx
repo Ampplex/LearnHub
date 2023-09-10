@@ -1,17 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Easing } from 'react-native';
+import { StyleSheet, Text, View, Easing, Animated } from 'react-native';
 import 'react-native-gesture-handler';
 import { createStackNavigator,  TransitionPresets, CardStyleInterpolators, } from '@react-navigation/stack';
-import Welcome from './screens/Welcome';
 import { NavigationContainer } from "@react-navigation/native";
 import Onboarding1 from './screens/Onboarding1';
 import Login from './screens/Login';
 import ResetPassword from './screens/ResetPassword';
 import Register from './screens/Register';
+import EnterCode from './screens/EnterCode';
 
 // Push to GitHub 'git push -u origin main'
 
-const config = {
+type TransitionSpec =   | {
+  animation: 'spring';
+  config: Omit<
+    Animated.SpringAnimationConfig,
+    'toValue' | keyof Animated.AnimationConfig
+  >;
+}
+| {
+  animation: 'timing';
+  config: Omit<
+    Animated.TimingAnimationConfig,
+    'toValue' | keyof Animated.AnimationConfig
+  >;
+};
+
+const config: TransitionSpec  = {
   animation: "spring",
   config: {
     stiffness: 1000,
@@ -23,7 +38,7 @@ const config = {
   },
 };
 
-const closeConfig = {
+const closeConfig: TransitionSpec = {
   animation: "timing",
   config: {
     duration: 220,
@@ -44,6 +59,7 @@ export default function App() {
                   headerTitleAlign: "center",
                   gestureEnabled: true,
                   gestureDirection: "horizontal",
+                  
                   cardStyleInterpolator:
                     CardStyleInterpolators.forHorizontalIOS,
                   transitionSpec: {
@@ -52,7 +68,6 @@ export default function App() {
                   },
                   headerMode: "float"
                 }}
-                animation="fade"
         >
     
       <Stack.Screen name="Onboarding1" component={Onboarding1} options={{
@@ -71,10 +86,10 @@ export default function App() {
       <Stack.Screen name="Register" component={Register} options={{
         headerShown: false
       }} />
-    
-      {/* <Stack.Screen name="Welcome" component={Welcome} options={{
+
+      <Stack.Screen name="EnterCode" component={EnterCode} options={{
         headerShown: false
-      }} /> */}
+      }} />
 
     </Stack.Navigator>
 
