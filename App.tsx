@@ -8,8 +8,10 @@ import Login from './screens/Login';
 import ResetPassword from './screens/ResetPassword';
 import Register from './screens/Register';
 import EnterCode from './screens/EnterCode';
+import ChatScreen from './screens/ChatScreen';
+import Study from './screens/Study';
 
-// Push to GitHub 'git push -u origin main'
+// Push to GitHub 'git push --set-upstream origin main'
 
 type TransitionSpec =   | {
   animation: 'spring';
@@ -59,7 +61,6 @@ export default function App() {
                   headerTitleAlign: "center",
                   gestureEnabled: true,
                   gestureDirection: "horizontal",
-                  
                   cardStyleInterpolator:
                     CardStyleInterpolators.forHorizontalIOS,
                   transitionSpec: {
@@ -88,6 +89,14 @@ export default function App() {
       }} />
 
       <Stack.Screen name="EnterCode" component={EnterCode} options={{
+        headerShown: false
+      }} />
+
+      <Stack.Screen name="ChatScreen" component={ChatScreen} options={{
+        headerShown: false
+      }} />
+
+      <Stack.Screen name="Study" component={Study} options={{
         headerShown: false
       }} />
 

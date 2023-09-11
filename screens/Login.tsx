@@ -6,9 +6,16 @@ import FlashMessage from "react-native-flash-message";
 import { showMessage } from "react-native-flash-message";
 
 interface Login_construct {
-  RequestLogin() : Promise<Number>
+  RequestLogin() : Promise<Response>
+  verifyInfo() : Number
   Reset() : string | void
 }
+
+interface Response {
+  status_code: string,
+  userName: string
+}
+
 
 const Login = ({navigation}: any) => {
   
@@ -24,53 +31,102 @@ const Login = ({navigation}: any) => {
       this.username = "";
     }
   
-    public RequestLogin = async () : Promise<Number> => {
-        const url = `https://ampplex-backend.onrender.com/Login/${this.email}/${this.password}`;
+    public RequestLogin = async () : Promise<Response> => {
+      // Fetches user details and login information from the back-end
+        // console.log(typeof(this.email))
         // console.log("Request sent");
+        
+        const url = `https://ampplex-backend.onrender.com/Login/${this.email}/${this.password}`;
         const response = await fetch(url);
         const data = await response.json();
-        let userName = "";
-  
-        if(data.status_code == "200") {
+
+        return data;
+      }
+      
+      public verifyInfo = () : Number => {
+      
+      // Verifying if the user has entered the correct login information using the RequestLogin method of this class
+      
+      let userName: string;
+      const resp: Promise<Response> = this.RequestLogin();
+
+      resp.then((response: Response) => {
+        if(response.status_code == "200") { 
+          // If the user has entered the correct login information then navigating to the EnterCode Screen
           
-          this.username = data.userName; // Retreiving userName returned by the backend server
+          this.username = response.userName; // Retreiving userName returned by the backend server
           userName = this.username;
           
           showMessage({
             message: "Logined successfully!",
             type: "success",
+            duration: 3000,
+            floating: true, // This allows the message to be displayed even if the user scrolls
+            icon: 'success', 
           });
-
+  
           setTimeout(() => {
+            console.log(userName);
             navigation.navigate("EnterCode", {userName})
           }, 680);
           return 0;
   
         } 
-        else if (this.password.length <= 8) {
+        else if (response.status_code == "404") {
+          showMessage({
+            message: "User not found try typing email manually",
+            type: "danger",
+            duration: 3000,
+            floating: true, // This allows the message to be displayed even if the user scrolls
+            icon: 'danger', 
+          });
+        }
+        else if (this.password.length < 8) {
           showMessage({
             message: "Password length must be more than 8 characters",
             type: "danger",
+            duration: 3000,
+            floating: true, // This allows the message to be displayed even if the user scrolls
+            icon: 'danger', 
           });
   
         }
+        else if (this.email.length == 0 || this.password.length == 0) {
+          showMessage({
+            message: "Please fill all the details",
+            type: "danger",
+            duration: 3000,
+            floating: true, // This allows the message to be displayed even if the user scrolls
+            icon: 'danger', 
+          });
+        }
         else {
           showMessage({
-            message: "Some error occurred!",
+            message: "Please enter your valid details!",
             type: "danger",
           });
   
         }
         return 1;
+      }).catch((exception) => {
+        console.log(exception);
+        showMessage({
+          message: "Some error occured :(",
+          type: "danger",
+        });
+      });
+      return 1;
     }
     
     public Reset = () : string | void => {
+      // If user wishes to reset password his/her password
+
       return "Reset";
     }
   }
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<any>();
+  const [password, setPassword] = useState<any>();
 
   return (
     <>
@@ -115,6 +171,9 @@ const Login = ({navigation}: any) => {
        <TextInput
       placeholder='Email'
       placeholderTextColor={"black"}
+      autoComplete={'off'}
+      autoCorrect={false}
+      value={email}
       onChangeText={(email:string) => setEmail(email)}
       style={{
         borderColor: '#4EAEFF',
@@ -138,6 +197,7 @@ const Login = ({navigation}: any) => {
       placeholder='Password'
       placeholderTextColor={"black"}
       secureTextEntry={true}
+      value={password}
       onChangeText={(password:string) => setPassword(password)}
       style={{
         borderColor: '#4EAEFF',
@@ -160,6 +220,7 @@ const Login = ({navigation}: any) => {
      <TouchableOpacity style={styles.LoginBtn} onPress={() => {
       const login_inst = new Login_Btn_Handler(email, password);
       login_inst.RequestLogin();
+      login_inst.verifyInfo();
      }}>
       <LinearGradient
         // Background Linear Gradient
